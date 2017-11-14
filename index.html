@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="webcomponents-loader.js" async></script>
+</head>
+<body>
+    <async-img id="img1" src="images/raven.png" lazy="true"></async-img>
+    <async-img id="img2" src="images/raven.png" lazy="false"></async-img>
+
+    <link rel="import" href="src/async-img.html" async>
+
+    <script defer>
+      window.addEventListener('WebComponentsReady', function wait() {
+        window.removeEventListener('WebComponentsReady', wait);
+
+        document.querySelector("#img1").load();
+      });
+    </script>
+</body>
+</html>

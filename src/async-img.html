@@ -1,0 +1,52 @@
+<template id ="async-image-template">
+    <img></img>
+</template>
+
+<script>
+    class AsyncImage extends HTMLElement {
+        static get observedAttributes() {return ['src']; }
+
+        get src() {
+            return this.getAttribute("src") || "";
+        }
+
+        set src(newValue) {
+            return this.setAttribute("src", newValue);
+        }
+
+        get lazy() {
+            return this.getAttribute("lazy") || false;
+        }
+
+        set lazy(newValue) {
+            this.setAttribute("lazy", newValue);
+        }
+
+        connectedCallback() {
+            const md = document.currentScript.ownerDocument;
+            const template = md.querySelector('#async-image-template');
+            const instance = document.importNode(template.content, true);
+            this.appendChild(instance);
+        }
+
+        disconnectedCallback() {
+            this.querySelector("img").src = null;
+        }
+
+        attributeChangedCallback(attr, oldValue, newValue) {
+            if (attr == "src" && this.lazy == "false" && (newValue || "").length > 0) {
+                this.load();
+            }
+        }
+
+        load(init) {
+            if (this.src.length > 0) {
+                fetch(this.src, init).then(response => response.blob()).then(myBlob => {
+                    this.querySelector("img").src = URL.createObjectURL(myBlob);
+                });
+            }
+        }
+    }
+
+    customElements.define("async-img", AsyncImage);
+</script>
